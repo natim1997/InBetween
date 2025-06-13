@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">InBetween</string>
+    <string name="action_return">Return</string>
+    <string name="hint_name">Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="action_signup">Sign Up</string>
+    <string name="menu">Menu</string>
+    <string name="prev_week">Previous week</string>
+    <string name="next_week">Next week</string>
+    <string name="add_task">Add Task</string>
+    <string name="add_new_task">Add New Task</string>
+    <string name="title">Title</string>
+    <string name="start_time">Start Time</string>
+    <string name="end_time">End Time</string>
+    <string name="date">Date</string>
+    <string name="weekly_repeat">Weekly repeat</string>
+    <string name="repeat_until">Repeat until</string>
+    <string name="reminder_before">Reminder before</string>
+    <string name="travel_time">Travel time</string>
+    <string name="save">Save</string>
+    <string name="note">Note</string>
+    <string name="bring_optional">Bring optional</string>
+
+
+</resources>

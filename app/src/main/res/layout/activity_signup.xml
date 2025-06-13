@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/signup_root"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/statusBar">
+
+    <!-- כפתור חזרה -->
+    <TextView
+        android:id="@+id/btnReturn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/action_return"
+        android:textColor="@color/primary"
+        android:textSize="16sp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"/>
+
+    <!-- המכולה התחתונה הצהובה עם פינות עליונות מעוגלות -->
+    <LinearLayout
+        android:id="@+id/bottomContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@drawable/rounded_bottom_background"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:layout_marginTop="100dp">
+
+    <!-- שדה שם מלא -->
+    <EditText
+        android:id="@+id/nameInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:hint="@string/hint_name"
+        android:inputType="textPersonName"
+        android:background="@drawable/rounded_edittext_bg"
+        android:padding="12dp"/>
+
+    <!-- שדה אימייל -->
+    <EditText
+        android:id="@+id/emailInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/hint_email"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/rounded_edittext_bg"
+        android:padding="12dp"/>
+
+    <!-- שדה סיסמה -->
+    <EditText
+        android:id="@+id/passwordInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/hint_password"
+        android:inputType="textPassword"
+        android:background="@drawable/rounded_edittext_bg"
+        android:padding="12dp"/>
+
+    <!-- שדה אימות סיסמה -->
+    <EditText
+        android:id="@+id/confirmPasswordInput"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="16dp"
+        android:hint="@string/hint_confirm_password"
+        android:inputType="textPassword"
+        android:background="@drawable/rounded_edittext_bg"
+        android:padding="12dp"/>
+
+    <!-- כפתור Sign Up -->
+        <Button
+            android:id="@+id/signUpButton"
+            android:layout_width="160dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center_horizontal"
+            android:text="@string/action_signup"
+            android:textColor="@color/statusBar"
+        android:background="@drawable/rounded_button_green" />
+
+    </LinearLayout>
+
+</RelativeLayout>

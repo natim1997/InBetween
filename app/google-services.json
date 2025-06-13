@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "511614336438",
+    "project_id": "inbetween-daa61",
+    "storage_bucket": "inbetween-daa61.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:511614336438:android:bf4915cd324523b5c09517",
+        "android_client_info": {
+          "package_name": "com.example.inbetween"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBl-q8-leAdRJ56yh-geFB68wukpYg-_KQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

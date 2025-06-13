@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="#F7F3D8">
+
+    <!-- אגף כותרות + קו במרכז הרוחב ומטה -->
+    <LinearLayout
+        android:id="@+id/headerContainer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="120dp">
+
+        <!-- הקו הירוק -->
+        <View
+            android:layout_width="4dp"
+            android:layout_height="match_parent"
+            android:background="#2A9D8F" />
+
+        <!-- הכותרות -->
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginStart="8dp">
+
+            <TextView
+                android:id="@+id/titleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="InBetween"
+                android:textSize="34sp"
+                android:textStyle="bold"
+                android:textColor="#2A9D8F" />
+
+            <TextView
+                android:id="@+id/subtitleText"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="Every Minute Counts"
+                android:textSize="16sp"
+                android:textColor="#E9C46A" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- החלק הצהוב המעוגל בתחתית -->
+    <LinearLayout
+        android:id="@+id/bottomContainer"
+        android:layout_width="match_parent"
+        android:layout_height="280dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_bottom_background"
+        android:paddingStart="24dp"
+        android:paddingEnd="24dp"
+        android:paddingTop="24dp">
+
+        <!-- שדה Email -->
+        <EditText
+            android:id="@+id/emailInput"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Email"
+            android:inputType="textEmailAddress"
+            android:background="@drawable/rounded_edittext_bg"
+            android:padding="12dp"/>
+
+        <!-- שדה Password -->
+        <EditText
+            android:id="@+id/passwordInput"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:hint="Password"
+            android:inputType="textPassword"
+            android:background="@drawable/rounded_edittext_bg"
+            android:padding="12dp"
+            android:layout_marginTop="16dp"/>
+
+        <!-- כפתור Login -->
+        <Button
+            android:id="@+id/loginButton"
+            android:layout_width="160dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="24dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="Login"
+            android:textColor="#FFFFFF"
+            android:background="@drawable/rounded_button_green" />
+
+        <!-- כפתור Sign Up -->
+        <Button
+            android:id="@+id/signUpButton"
+            android:layout_width="160dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="16dp"
+            android:layout_gravity="center_horizontal"
+            android:paddingStart="32dp"
+            android:paddingEnd="32dp"
+            android:text="Sign Up"
+            android:textColor="#2A9D8F"
+            android:background="@drawable/rounded_button_white"
+            app:backgroundTint="@null"
+            app:backgroundTintMode="src_over" />
+
+    </LinearLayout>
+
+</RelativeLayout>
