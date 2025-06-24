@@ -16,7 +16,6 @@ class TaskAdapter :
         val tvEnd      : TextView = view.findViewById(R.id.tvTaskEnd)
         val tvTitle    : TextView = view.findViewById(R.id.tvTaskTitle)
         val tvNote     : TextView = view.findViewById(R.id.tvTaskNote)
-        val tvBring    : TextView = view.findViewById(R.id.tvTaskBring)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskVH {
@@ -37,8 +36,6 @@ class TaskAdapter :
         // Note: prefix
         holder.tvNote.text  = "Note: ${task.note}"
 
-        // Bring: prefix, אם ריק מושאיר ריק
-        holder.tvBring.text = task.bring?.let { "Bring: $it" } ?: ""
     }
 
     private class DiffCallback : DiffUtil.ItemCallback<TaskItem>() {

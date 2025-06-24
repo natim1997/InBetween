@@ -6,8 +6,9 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.RadioButton
+import android.widget.RadioGroup
 import androidx.appcompat.app.AppCompatActivity
-import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.android.material.textfield.TextInputEditText
 import java.io.Serializable
 import java.time.LocalDate
@@ -17,18 +18,18 @@ import java.util.Locale
 
 class AddTaskActivity : AppCompatActivity() {
 
-    private lateinit var etTitle     : TextInputEditText
-    private lateinit var etStart     : TextInputEditText
-    private lateinit var etEnd       : TextInputEditText
-    private lateinit var etDate      : TextInputEditText
-    private lateinit var switchWeekly: SwitchMaterial
-    private lateinit var etRecEnd    : TextInputEditText
-    private lateinit var lytRecEnd   : View
-    private lateinit var etNote      : TextInputEditText
-    private lateinit var etBring     : TextInputEditText
-    private lateinit var etReminder  : TextInputEditText
-    private lateinit var etTravel    : TextInputEditText
-    private lateinit var btnSave     : Button
+    private lateinit var etTitle         : TextInputEditText
+    private lateinit var etStart         : TextInputEditText
+    private lateinit var etEnd           : TextInputEditText
+    private lateinit var etDate          : TextInputEditText
+    private lateinit var rgRepeat        : RadioGroup
+    private lateinit var radioNever      : RadioButton
+    private lateinit var radioDaily      : RadioButton
+    private lateinit var radioWeekly     : RadioButton
+    private lateinit var lytRecEnd       : View
+    private lateinit var etRecurrenceEnd : TextInputEditText
+    private lateinit var etNote          : TextInputEditText
+    private lateinit var btnSaveTask     : Button
 
     private val timeFormatter = DateTimeFormatter.ofPattern("HH:mm", Locale.getDefault())
 
@@ -36,68 +37,85 @@ class AddTaskActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_task)
 
-        etTitle      = findViewById(R.id.etTitle)
-        etStart      = findViewById(R.id.etStartTime)
-        etEnd        = findViewById(R.id.etEndTime)
-        etDate       = findViewById(R.id.etDate)
-        switchWeekly = findViewById(R.id.switchWeekly)
-        etRecEnd     = findViewById(R.id.etRecurrenceEnd)
-        lytRecEnd    = findViewById(R.id.lytRecurrenceEnd)
-        etNote       = findViewById(R.id.etNote)
-        etBring      = findViewById(R.id.etBring)
-        etReminder   = findViewById(R.id.etReminder)
-        etTravel     = findViewById(R.id.etTravel)
-        btnSave      = findViewById(R.id.btnSaveTask)
+        etTitle          = findViewById(R.id.etTitle)
+        etStart          = findViewById(R.id.etStartTime)
+        etEnd            = findViewById(R.id.etEndTime)
+        etDate           = findViewById(R.id.etDate)
+        rgRepeat         = findViewById(R.id.rgRepeat)
+        radioNever       = findViewById(R.id.radioNever)
+        radioDaily       = findViewById(R.id.radioDaily)
+        radioWeekly      = findViewById(R.id.radioWeekly)
+        lytRecEnd        = findViewById(R.id.lytRecEnd)
+        etRecurrenceEnd  = findViewById(R.id.etRecurrenceEnd)
+        etNote           = findViewById(R.id.etNote)
+        btnSaveTask      = findViewById(R.id.btnSaveTask)
 
-        // pickers
-        etStart .setOnClickListener { pickTime { etStart.setText(it) } }
-        etEnd   .setOnClickListener { pickTime { etEnd.setText(it) } }
-        etDate  .setOnClickListener { pickDate { etDate.setText(it) } }
-        etRecEnd.setOnClickListener { pickDate { etRecEnd.setText(it) } }
+        // time/date pickers
+        etStart.setOnClickListener { pickTime { etStart.setText(it) } }
+        etEnd.setOnClickListener   { pickTime { etEnd.setText(it) } }
+        etDate.setOnClickListener  { pickDate { etDate.setText(it) } }
+        etRecurrenceEnd.setOnClickListener { pickDate { etRecurrenceEnd.setText(it) } }
 
-        switchWeekly.setOnCheckedChangeListener { _, on ->
-            lytRecEnd.visibility = if (on) View.VISIBLE else View.GONE
+        // show “repeat until” only when daily or weekly
+        rgRepeat.setOnCheckedChangeListener { _, checkedId ->
+            lytRecEnd.visibility =
+                if (checkedId == R.id.radioDaily || checkedId == R.id.radioWeekly)
+                    View.VISIBLE
+                else
+                    View.GONE
         }
 
-        btnSave.setOnClickListener {
-            val dateVal    = LocalDate.parse(etDate.text.toString())
-            val recEndDate = etRecEnd.text.toString()
-                .takeIf { switchWeekly.isChecked }
-                ?.let { LocalDate.parse(it) }
+        btnSaveTask.setOnClickListener {
+            // validate start ≤ end
+            val s = etStart.text.toString()
+            val e = etEnd.text.toString()
+            if (s.isNotBlank() && e.isNotBlank()) {
+                val t1 = LocalTime.parse(s, timeFormatter)
+                val t2 = LocalTime.parse(e, timeFormatter)
+                if (t1.isAfter(t2)) {
+                    etStart.error = "Must be before end"
+                    return@setOnClickListener
+                }
+            }
+
+            val dateVal = LocalDate.parse(etDate.text.toString())
+            val recEnd = if (radioDaily.isChecked || radioWeekly.isChecked)
+                LocalDate.parse(etRecurrenceEnd.text.toString())
+            else
+                null
 
             val task = TaskItem(
                 title               = etTitle.text.toString(),
                 date                = dateVal,
-                startTime           = etStart.text.toString(),
-                endTime             = etEnd.text.toString(),
+                startTime           = s,
+                endTime             = e,
                 note                = etNote.text.toString().takeIf { it.isNotBlank() },
-                bring               = etBring.text.toString().takeIf { it.isNotBlank() },
-                remindBeforeMinutes = etReminder.text.toString().toIntOrNull(),
-                travelMinutes       = etTravel.text.toString().toIntOrNull(),
-                isWeekly            = switchWeekly.isChecked,
-                recurrenceEndDate   = recEndDate
+                isWeekly            = radioWeekly.isChecked,
+                isDaily             = radioDaily.isChecked,
+                recurrenceEndDate   = recEnd
             )
 
-            val data = Intent().apply {
-                putExtra("NEW_TASK", task as Serializable)
+            Intent().also {
+                it.putExtra("NEW_TASK", task as Serializable)
+                setResult(RESULT_OK, it)
             }
-            setResult(RESULT_OK, data)
             finish()
         }
     }
 
     private fun pickTime(onPicked: (String) -> Unit) {
         val now = LocalTime.now()
-        TimePickerDialog(this,{_,h,m ->
-            onPicked(LocalTime.of(h,m).format(timeFormatter))
+        TimePickerDialog(this, { _, h, m ->
+            onPicked(LocalTime.of(h, m).format(timeFormatter))
         }, now.hour, now.minute, true).show()
     }
 
     private fun pickDate(onPicked: (String) -> Unit) {
         val today = LocalDate.now()
-        DatePickerDialog(this,
-            {_, y, mo, d -> onPicked(LocalDate.of(y, mo+1, d).toString()) },
-            today.year, today.monthValue-1, today.dayOfMonth
+        DatePickerDialog(
+            this,
+            { _, y, mo, d -> onPicked(LocalDate.of(y, mo + 1, d).toString()) },
+            today.year, today.monthValue - 1, today.dayOfMonth
         ).show()
     }
 }

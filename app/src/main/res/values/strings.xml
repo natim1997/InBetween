@@ -16,12 +16,11 @@
     <string name="end_time">End Time</string>
     <string name="date">Date</string>
     <string name="weekly_repeat">Weekly repeat</string>
+    <string name="daily_repeat">daily repeat</string>
+    <string name="never_repeat">never repeat</string>
     <string name="repeat_until">Repeat until</string>
-    <string name="reminder_before">Reminder before</string>
-    <string name="travel_time">Travel time</string>
     <string name="save">Save</string>
     <string name="note">Note</string>
-    <string name="bring_optional">Bring optional</string>
 
 
 </resources>

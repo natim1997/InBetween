@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/scrollAddTask"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/statusBar"
+    android:background="@color/secondary"
     android:padding="16dp">
 
     <LinearLayout
@@ -11,151 +11,144 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <!-- כותרת המסך -->
-        <TextView
-            android:id="@+id/tvAddTitle"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/add_new_task"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:textColor="@color/primary"
-            android:layout_gravity="center_horizontal"
-            android:layout_marginBottom="16dp"/>
-
-        <!-- כותרת המשימה -->
+        <!-- Title -->
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/title">
+            android:hint="@string/title"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etTitle"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="48dp"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:inputType="textPersonName"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- זמן התחלה -->
+        <!-- Start Time -->
         <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/start_time"
-            android:layout_marginTop="12dp">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etStartTime"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"/>
+                android:layout_height="48dp"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- זמן סיום -->
+        <!-- End Time -->
         <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/end_time"
-            android:layout_marginTop="12dp">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEndTime"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"/>
+                android:layout_height="48dp"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- תאריך משימה -->
+        <!-- Date -->
         <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/date"
-            android:layout_marginTop="12dp">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etDate"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"/>
+                android:layout_height="48dp"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- משימה שבועית -->
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switchWeekly"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:padding="16dp"
-            android:minHeight="48dp"
-            android:text="@string/weekly_repeat"
-            android:layout_marginTop="12dp"/>
-
-        <!-- תאריך סיום לחזרה שבועית -->
+        <!-- Note -->
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/lytRecurrenceEnd"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/repeat_until"
-            android:visibility="gone"
-            android:layout_marginTop="8dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etRecurrenceEnd"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:focusable="false"/>
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <!-- הערה -->
-        <com.google.android.material.textfield.TextInputLayout
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/note"
-            android:layout_marginTop="12dp">
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNote"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+                android:layout_height="80dp"
+                android:textSize="16sp"
+                android:padding="12dp"
+                android:inputType="textMultiLine"/>
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- להביא -->
-        <com.google.android.material.textfield.TextInputLayout
+        <!-- Repeat options container -->
+        <com.google.android.material.card.MaterialCardView
+            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/bring_optional"
-            android:layout_marginTop="12dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etBring"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </com.google.android.material.textfield.TextInputLayout>
+            app:cardCornerRadius="8dp"
+            app:cardBackgroundColor="@color/lightGray">
 
-        <!-- התראה מראש -->
-        <com.google.android.material.textfield.TextInputLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="@string/reminder_before"
-            android:layout_marginTop="12dp">
-            <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etReminder"
+            <RadioGroup
+                android:id="@+id/rgRepeat"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:inputType="number"/>
-        </com.google.android.material.textfield.TextInputLayout>
+                android:orientation="vertical"
+                android:padding="8dp">
 
-        <!-- זמן נסיעה -->
+                <RadioButton
+                    android:id="@+id/radioNever"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/never_repeat" />
+
+                <RadioButton
+                    android:id="@+id/radioDaily"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/daily_repeat" />
+
+                <RadioButton
+                    android:id="@+id/radioWeekly"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/weekly_repeat" />
+            </RadioGroup>
+        </com.google.android.material.card.MaterialCardView>
+
+        <!-- Recurrence end date -->
         <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/lytRecEnd"
+            android:layout_marginTop="12dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="@string/travel_time"
-            android:layout_marginTop="12dp">
+            android:hint="@string/repeat_until"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            android:visibility="gone">
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/etTravel"
+                android:id="@+id/etRecurrenceEnd"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:inputType="number"/>
+                android:layout_height="48dp"
+                android:padding="12dp"
+                android:focusable="false" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <!-- כפתור Save -->
+        <!-- Save button -->
         <Button
             android:id="@+id/btnSaveTask"
+            android:layout_marginTop="24dp"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:layout_marginTop="24dp"
             android:text="@string/save"
-            android:textColor="@color/white"
-            android:background="@drawable/rounded_button_green"/>
+            style="@style/Widget.MaterialComponents.Button"/>
     </LinearLayout>
 </ScrollView>

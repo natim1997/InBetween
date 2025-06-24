@@ -1,91 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="100dp"
-    android:padding="8dp">
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:paddingVertical="8dp"
+    android:paddingHorizontal="16dp"
+    android:layout_marginTop="8dp">
 
-    <!-- 1) תיבה ירוקה עם זמני התחלה וסיום, עכשיו רוחב 80dp במקום 60dp -->
-    <RelativeLayout
-        android:id="@+id/timeContainer"
-        android:layout_width="80dp"
-        android:layout_height="match_parent"
-        android:background="@drawable/bg_date_cell">
+    <!-- בלוק השעות -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:background="@drawable/bg_time_block"
+        android:paddingStart="12dp"
+        android:paddingEnd="8dp"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
 
-    <!-- שעת התחלה למעלה -->
         <TextView
             android:id="@+id/tvTaskStart"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="08:00"
-            android:textColor="#000"
             android:textSize="14sp"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"/>
+            android:textColor="@android:color/black" />
 
-    <!-- קו מקווקו אנכי -->
+        <!-- קו אנכי נקודתי בין התחלה וסיום -->
         <View
-            android:id="@+id/vlDashed"
             android:layout_width="2dp"
-            android:layout_height="match_parent"
-            android:layout_marginTop="24dp"
-            android:layout_marginBottom="24dp"
-            android:layout_centerHorizontal="true"
-            android:background="@drawable/dashed_line"/>
+            android:layout_height="24dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@android:color/black"
+            android:alpha="0.2"
+            android:layout_marginVertical="4dp" />
 
-    <!-- שעת סיום למטה -->
         <TextView
             android:id="@+id/tvTaskEnd"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="08:45"
-            android:textColor="#000"
             android:textSize="14sp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"/>
+            android:textColor="@android:color/black" />
+    </LinearLayout>
 
-    </RelativeLayout>
+    <!-- רווח קטן בין בלוקים -->
+    <Space
+        android:layout_width="8dp"
+        android:layout_height="match_parent" />
 
-    <!-- 2) תיבה צהובה שחופפת את הירוק פחות -->
+    <!-- בלוק הפרטים -->
     <LinearLayout
-        android:id="@+id/contentContainer"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_toEndOf="@id/timeContainer"
-        android:layout_marginStart="-8dp"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
         android:orientation="vertical"
-        android:padding="8dp"
-        android:background="@drawable/bg_task_yellow">
-
-    <!-- כותרת -->
+        android:background="@drawable/bg_task_block"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
         <TextView
             android:id="@+id/tvTaskTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Meeting with Bob"
-            android:textColor="#000"
+            android:text="כותרת המשימה"
+            android:textStyle="bold"
             android:textSize="16sp"
-            android:textStyle="bold"/>
+            android:textColor="@android:color/black"/>
 
-    <!-- Note: prefix -->
         <TextView
             android:id="@+id/tvTaskNote"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Note: Discuss project status"
-            android:textColor="#000"
-            android:textSize="12sp"
-            android:layout_marginTop="2dp"/>
-
-    <!-- Bring: prefix -->
-        <TextView
-            android:id="@+id/tvTaskBring"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Bring: laptop"
-            android:textColor="#000"
-            android:textSize="12sp"
-            android:layout_marginTop="2dp"/>
-
+            android:text="Note:"
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:layout_marginTop="4dp"/>
     </LinearLayout>
 
-</RelativeLayout>
+</LinearLayout>

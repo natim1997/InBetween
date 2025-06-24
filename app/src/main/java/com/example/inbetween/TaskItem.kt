@@ -9,9 +9,7 @@ data class TaskItem(
     val startTime         : String,
     val endTime           : String,
     val note              : String?      = null,
-    val bring             : String?      = null,
-    val remindBeforeMinutes: Int?        = null,
-    val travelMinutes     : Int?         = null,
+    var isDaily           : Boolean      = false,
     val isWeekly          : Boolean      = false,
     val recurrenceEndDate : LocalDate?   = null
 ) : Serializable
