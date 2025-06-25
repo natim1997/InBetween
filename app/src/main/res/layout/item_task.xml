@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="horizontal"
     android:paddingVertical="8dp"
     android:paddingHorizontal="16dp"
     android:layout_marginTop="8dp">
 
-    <!-- בלוק השעות -->
+    <!-- בלוק השעות (ירוק) -->
     <LinearLayout
+        android:id="@+id/llTimeBlock"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:background="@drawable/bg_time_block"
         android:paddingStart="12dp"
-        android:paddingEnd="8dp"
+        android:paddingEnd="24dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
 
@@ -44,20 +44,22 @@
             android:textColor="@android:color/black" />
     </LinearLayout>
 
-    <!-- רווח קטן בין בלוקים -->
-    <Space
-        android:layout_width="8dp"
-        android:layout_height="match_parent" />
-
-    <!-- בלוק הפרטים -->
+    <!-- ה“בלוק הפרטים” (צהוב), מיישר תחתית עם הבלוק הירוק -->
     <LinearLayout
-        android:layout_width="0dp"
+        android:id="@+id/llTaskBlock"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
+        android:layout_toEndOf="@id/llTimeBlock"
+        android:layout_alignTop="@id/llTimeBlock"
+        android:layout_alignBottom="@id/llTimeBlock"
+        android:translationX="-16dp"
         android:orientation="vertical"
         android:background="@drawable/bg_task_block"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:paddingTop="8dp"
         android:paddingBottom="8dp">
+
         <TextView
             android:id="@+id/tvTaskTitle"
             android:layout_width="wrap_content"
@@ -75,6 +77,7 @@
             android:textSize="14sp"
             android:textColor="@android:color/black"
             android:layout_marginTop="4dp"/>
+
     </LinearLayout>
 
-</LinearLayout>
+</RelativeLayout>
