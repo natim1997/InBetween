@@ -55,12 +55,9 @@ class DateAdapter(
 
     override fun getItemCount() = items.size
 
-    /**
-     * תוקף את רשימת התאריכים ומעדכן בחירה לפי התאריך הנוכחי (optional)
-     */
+
     fun updateDates(newDates: List<LocalDate>) {
         items = newDates
-        // מחזיר את המיקום שבעצם נבחר
         selectedPos = newDates.indexOfFirst { it == items.getOrNull(selectedPos) }
             .takeIf { it >= 0 } ?: 0
         notifyDataSetChanged()

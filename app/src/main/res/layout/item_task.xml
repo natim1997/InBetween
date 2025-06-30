@@ -6,7 +6,6 @@
     android:paddingHorizontal="16dp"
     android:layout_marginTop="8dp">
 
-    <!-- בלוק השעות (ירוק) -->
     <LinearLayout
         android:id="@+id/llTimeBlock"
         android:layout_width="wrap_content"
@@ -26,7 +25,6 @@
             android:textSize="14sp"
             android:textColor="@android:color/black" />
 
-        <!-- קו אנכי נקודתי בין התחלה וסיום -->
         <View
             android:layout_width="2dp"
             android:layout_height="24dp"
@@ -44,7 +42,6 @@
             android:textColor="@android:color/black" />
     </LinearLayout>
 
-    <!-- ה“בלוק הפרטים” (צהוב), מיישר תחתית עם הבלוק הירוק -->
     <LinearLayout
         android:id="@+id/llTaskBlock"
         android:layout_width="match_parent"

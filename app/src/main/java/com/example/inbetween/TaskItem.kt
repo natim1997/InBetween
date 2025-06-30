@@ -11,5 +11,7 @@ data class TaskItem(
     val note              : String?      = null,
     var isDaily           : Boolean      = false,
     val isWeekly          : Boolean      = false,
-    val recurrenceEndDate : LocalDate?   = null
+    val recurrenceEndDate : LocalDate?   = null,
+    val excludedDates: MutableList<LocalDate> = mutableListOf(),
+    val isPermanent: Boolean = false
 ) : Serializable

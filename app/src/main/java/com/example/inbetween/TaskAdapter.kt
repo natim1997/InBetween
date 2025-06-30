@@ -8,14 +8,15 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 
-class TaskAdapter :
-    ListAdapter<TaskItem, TaskAdapter.TaskVH>(DiffCallback()) {
+class TaskAdapter(
+    private val onTaskClick: (TaskItem) -> Unit
+) : ListAdapter<TaskItem, TaskAdapter.TaskVH>(DiffCallback()) {
 
     inner class TaskVH(view: View) : RecyclerView.ViewHolder(view) {
-        val tvStart    : TextView = view.findViewById(R.id.tvTaskStart)
-        val tvEnd      : TextView = view.findViewById(R.id.tvTaskEnd)
-        val tvTitle    : TextView = view.findViewById(R.id.tvTaskTitle)
-        val tvNote     : TextView = view.findViewById(R.id.tvTaskNote)
+        val tvStart : TextView = view.findViewById(R.id.tvTaskStart)
+        val tvEnd   : TextView = view.findViewById(R.id.tvTaskEnd)
+        val tvTitle : TextView = view.findViewById(R.id.tvTaskTitle)
+        val tvNote  : TextView = view.findViewById(R.id.tvTaskNote)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TaskVH {
@@ -26,16 +27,13 @@ class TaskAdapter :
 
     override fun onBindViewHolder(holder: TaskVH, position: Int) {
         val task = getItem(position)
-        // שעות בשחור
+
         holder.tvStart.text = task.startTime
         holder.tvEnd.text   = task.endTime
-
-        // כותרת
         holder.tvTitle.text = task.title
+        holder.tvNote.text  = task.note?.let { "Note: $it" } ?: ""
 
-        // Note: prefix
-        holder.tvNote.text  = "Note: ${task.note}"
-
+        holder.itemView.setOnClickListener { onTaskClick(task) }
     }
 
     private class DiffCallback : DiffUtil.ItemCallback<TaskItem>() {

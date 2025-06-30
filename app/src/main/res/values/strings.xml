@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">InBetween</string>
     <string name="action_return">Return</string>
+    <string name="add_action">Add Action</string>
     <string name="hint_name">Name</string>
     <string name="hint_email">Email</string>
     <string name="hint_password">Password</string>
@@ -21,6 +22,29 @@
     <string name="repeat_until">Repeat until</string>
     <string name="save">Save</string>
     <string name="note">Note</string>
+    <string name="add_goal">Add Goal</string>
+    <string name="goal_name">Goal Name</string>
+    <string name="sessions_per_week">Sessions pre week</string>
+    <string name="duration_minutes">Duration minutes</string>
+    <string name="date_range">Date Range</string>
+    <string name="select_start">Selection Start</string>
+    <string name="select_end">Selection End</string>
+    <string name="choose_suggestion">Choose Suggestion</string>
+    <string name="edit_goal">Edit Goal</string>
+    <string name="delete_goal">Delete Goal</string>
+    <string name="accept">Accept</string>
+    <string name="reject">Reject</string>
+    <string name="other">Other</string>
+    <string name="start_date">Start Date</string>
+    <string name="end_date">End Date</string>
+    <string name="select_date">Select Date</string>
+    <string name="friend_email">Friends Email</string>
+    <string name="send_request">Send Request</string>
+    <string name="incoming_requests">Incoming Requests</string>
+    <string name="your_friends">Your Friends</string>
+    <string name="contacts">Contacts</string>
+    <string name="do_not_auto_expire">Do Not Auto Expire</string>
+
 
 
 </resources>
