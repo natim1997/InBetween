@@ -16,6 +16,7 @@ import java.time.LocalDate
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
+import java.time.temporal.TemporalAdjusters
 import java.util.*
 
 class HomeActivity : BaseActivity() {
@@ -40,7 +41,7 @@ class HomeActivity : BaseActivity() {
 
     private val allTasks     = mutableListOf<TaskItem>()
     private var selectedDate = LocalDate.now()
-    private var weekStart    = selectedDate.with(DayOfWeek.SUNDAY)
+    private var weekStart    = selectedDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY))
     private val timeFmt      = DateTimeFormatter.ofPattern("HH:mm")
     private lateinit var adapter: TaskAdapter
 
@@ -69,8 +70,7 @@ class HomeActivity : BaseActivity() {
         btnNextWeek = findViewById(R.id.btnNextWeek)
         tvWeekLabel = findViewById(R.id.tvWeekLabel)
 
-        rvDates.layoutManager =
-            LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
+        rvDates.layoutManager = LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false)
         rvDates.adapter = DateAdapter(generateWeekDates(weekStart)) { date ->
             selectedDate = date
             refreshWeek()
@@ -101,10 +101,12 @@ class HomeActivity : BaseActivity() {
             startActivity(Intent(this, ContactsActivity::class.java))
         }
         btnPrevWeek.setOnClickListener {
-            weekStart = weekStart.minusWeeks(1); refreshWeek()
+            weekStart = weekStart.minusWeeks(1)
+            refreshWeek()
         }
         btnNextWeek.setOnClickListener {
-            weekStart = weekStart.plusWeeks(1); refreshWeek()
+            weekStart = weekStart.plusWeeks(1)
+            refreshWeek()
         }
         if (targetPermission != "edit") {
             fabAddTask.visibility = View.GONE
@@ -174,10 +176,8 @@ class HomeActivity : BaseActivity() {
                 for (doc in snaps.documents) {
                     val dateStr = doc.getString("date")?.takeIf { it.isNotBlank() } ?: continue
                     val title   = doc.getString("title") ?: continue
-                    val start   = doc.getString("startTime")
-                        ?.takeIf { it.isNotBlank() } ?: continue
-                    val end     = doc.getString("endTime")
-                        ?.takeIf { it.isNotBlank() } ?: continue
+                    val start   = doc.getString("startTime")?.takeIf { it.isNotBlank() } ?: continue
+                    val end     = doc.getString("endTime")?.takeIf { it.isNotBlank() } ?: continue
                     val isDaily = doc.getBoolean("isDaily") ?: false
                     val isWeekly= doc.getBoolean("isWeekly") ?: false
                     val recEnd  = doc.getString("recurrenceEndDate")
@@ -207,8 +207,8 @@ class HomeActivity : BaseActivity() {
         (rvDates.adapter as DateAdapter).updateDates(dates)
         if (selectedDate !in dates) selectedDate = weekStart
         updateTasks()
-        val monthEnglish =
-            weekStart.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+
+        val monthEnglish = weekStart.month.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
         tvWeekLabel.text = "Week of ${weekStart.dayOfMonth} $monthEnglish"
     }
 
@@ -218,11 +218,9 @@ class HomeActivity : BaseActivity() {
             when {
                 t.date == selectedDate -> true
                 t.isDaily && !selectedDate.isBefore(t.date)
-                        && (t.recurrenceEndDate == null
-                        || !selectedDate.isAfter(t.recurrenceEndDate)) -> true
+                        && (t.recurrenceEndDate == null || !selectedDate.isAfter(t.recurrenceEndDate)) -> true
                 t.isWeekly && !selectedDate.isBefore(t.date)
-                        && (t.recurrenceEndDate == null
-                        || !selectedDate.isAfter(t.recurrenceEndDate))
+                        && (t.recurrenceEndDate == null || !selectedDate.isAfter(t.recurrenceEndDate))
                         && selectedDate.dayOfWeek == t.date.dayOfWeek -> true
                 else -> false
             }
@@ -231,8 +229,8 @@ class HomeActivity : BaseActivity() {
         adapter.submitList(list)
     }
 
-    private fun generateWeekDates(center: LocalDate) =
-        (0L..6L).map { center.with(DayOfWeek.SUNDAY).plusDays(it) }
+    private fun generateWeekDates(start: LocalDate) =
+        (0L..6L).map { start.plusDays(it) }
 
     private fun TaskItem.toMap(): Map<String, Any> {
         val m = mutableMapOf<String, Any>(
