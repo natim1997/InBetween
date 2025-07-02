@@ -1,138 +1,269 @@
 package com.example.inbetween
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
-import com.google.android.material.textfield.TextInputEditText
+import android.widget.RadioButton
+import android.widget.RadioGroup
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.textfield.TextInputEditText
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
 
 class ContactsActivity : BaseActivity() {
+    // Firebase instances
+    private val firebaseAuth = FirebaseAuth.getInstance()
+    private val firestoreDb  = FirebaseFirestore.getInstance()
 
-    private val auth = FirebaseAuth.getInstance()
-    private val db   = FirebaseFirestore.getInstance()
+    // UI
+    private lateinit var etFriendEmail       : TextInputEditText
+    private lateinit var rgPermission        : RadioGroup
+    private lateinit var rbViewOnly          : RadioButton
+    private lateinit var rbEdit              : RadioButton
+    private lateinit var btnSendRequest      : Button
+    private lateinit var btnMySchedule       : Button
 
-    private lateinit var etFriendEmail: TextInputEditText
-    private lateinit var btnSendRequest: Button
-    private lateinit var rvRequests: RecyclerView
-    private lateinit var rvFriends: RecyclerView
+    private lateinit var rvRequests          : RecyclerView
+    private lateinit var rvViewOnlyFriends   : RecyclerView
+    private lateinit var rvFullAccessFriends : RecyclerView
 
-    private val incomingRequests = mutableListOf<FriendRequest>()
-    private val friendsList      = mutableListOf<Friend>()
-    private lateinit var requestsAdapter: FriendRequestAdapter
-    private lateinit var friendsAdapter: FriendAdapter
+    // Adapters
+    private lateinit var requestAdapter      : ContactRequestAdapter
+    private lateinit var viewOnlyAdapter     : FriendAdapter
+    private lateinit var fullAccessAdapter   : FriendAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacts)
 
-        etFriendEmail   = findViewById(R.id.etFriendEmail)
-        btnSendRequest  = findViewById(R.id.btnSendRequest)
-        rvRequests      = findViewById(R.id.rvRequests)
-        rvFriends       = findViewById(R.id.rvFriends)
+        // bind views
+        etFriendEmail       = findViewById(R.id.etFriendEmail)
+        rgPermission        = findViewById(R.id.rgPermission)
+        rbViewOnly          = findViewById(R.id.rbViewOnly)
+        rbEdit              = findViewById(R.id.rbEdit)
+        btnSendRequest      = findViewById(R.id.btnSendRequest)
+        btnMySchedule       = findViewById(R.id.btnMySchedule)
 
-        requestsAdapter = FriendRequestAdapter(
-            items    = incomingRequests,
-            onAccept = { req -> acceptRequest(req) },
-            onReject = { req -> rejectRequest(req) }
+        rvRequests          = findViewById(R.id.rvRequests)
+        rvViewOnlyFriends   = findViewById(R.id.rvViewOnlyFriends)
+        rvFullAccessFriends = findViewById(R.id.rvFullAccessFriends)
+
+        // prepare adapters
+        requestAdapter = ContactRequestAdapter(::handleAccept, ::handleDecline)
+
+        viewOnlyAdapter = FriendAdapter(
+            onClick  = { openFriendCalendar(it) },
+            onDelete = { removeFriend(it) }
         )
-        rvRequests.layoutManager = LinearLayoutManager(this)
-        rvRequests.adapter       = requestsAdapter
+        fullAccessAdapter = FriendAdapter(
+            onClick  = { openFriendCalendar(it) },
+            onDelete = { removeFriend(it) }
+        )
 
-        friendsAdapter = FriendAdapter(friendsList)
-        rvFriends.layoutManager = LinearLayoutManager(this)
-        rvFriends.adapter       = friendsAdapter
+        // setup RecyclerViews
+        rvRequests.layoutManager          = LinearLayoutManager(this)
+        rvRequests.adapter                = requestAdapter
 
-        btnSendRequest.setOnClickListener { sendFriendRequest() }
+        rvViewOnlyFriends.layoutManager   = LinearLayoutManager(this)
+        rvViewOnlyFriends.adapter         = viewOnlyAdapter
 
-        loadIncomingRequests()
+        rvFullAccessFriends.layoutManager = LinearLayoutManager(this)
+        rvFullAccessFriends.adapter       = fullAccessAdapter
+
+        // send request button
+        btnSendRequest.setOnClickListener {
+            val email = etFriendEmail.text.toString().trim().lowercase()
+            if (email.isEmpty()) {
+                Toast.makeText(this, "Please enter an email", Toast.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
+            val permission = if (rbEdit.isChecked) "edit" else "view"
+            sendFriendRequest(email, permission)
+        }
+
+        // My Schedule: return to own calendar
+        btnMySchedule.setOnClickListener {
+            startActivity(Intent(this, HomeActivity::class.java))
+        }
+
+        // load existing requests & friends
+        loadRequests()
         loadFriends()
     }
 
-    private fun sendFriendRequest() {
-        val email = etFriendEmail.text.toString().trim()
-        if (email.isEmpty()) return
-
-        db.collection("users")
+    private fun sendFriendRequest(email: String, permission: String) {
+        Log.d("Contacts", "Trying to send request to $email with perm=$permission")
+        firestoreDb.collection("users")
             .whereEqualTo("email", email)
             .get()
-            .addOnSuccessListener { snaps: QuerySnapshot ->
-                if (snaps.isEmpty) return@addOnSuccessListener
-                val targetUid = snaps.documents[0].id
-                val meUid     = auth.currentUser!!.uid
-                val meEmail   = auth.currentUser!!.email ?: ""
-
-                db.collection("users")
-                    .document(targetUid)
-                    .collection("incoming_requests")
-                    .document(meUid)
-                    .set(mapOf("fromUid" to meUid, "fromEmail" to meEmail))
-            }
-            .addOnFailureListener {
-            }
-    }
-
-    private fun loadIncomingRequests() {
-        val meUid = auth.currentUser!!.uid
-        db.collection("users")
-            .document(meUid)
-            .collection("incoming_requests")
-            .addSnapshotListener { snaps: QuerySnapshot?, _ ->
-                incomingRequests.clear()
-                snaps?.documents?.forEach { doc ->
-                    val fromUid   = doc.id
-                    val fromEmail = doc.getString("fromEmail") ?: ""
-                    incomingRequests += FriendRequest(fromUid, fromEmail)
+            .addOnSuccessListener { snaps ->
+                if (snaps.isEmpty) {
+                    Toast.makeText(this, "User not found", Toast.LENGTH_SHORT).show()
+                    return@addOnSuccessListener
                 }
-                requestsAdapter.notifyDataSetChanged()
+                val friendUid = snaps.documents.first().id
+                val me        = firebaseAuth.currentUser!!.uid
+                val myName    = firebaseAuth.currentUser!!.displayName ?: "Unknown"
+
+                // write pending to my subcollection
+                firestoreDb.collection("users")
+                    .document(me)
+                    .collection("friends")
+                    .document(friendUid)
+                    .set(mapOf(
+                        "permission" to permission,
+                        "status"     to "pending"
+                    ))
+
+                // write pending to theirs (with my name)
+                firestoreDb.collection("users")
+                    .document(friendUid)
+                    .collection("friends")
+                    .document(me)
+                    .set(mapOf(
+                        "permission" to permission,
+                        "status"     to "pending",
+                        "fromName"   to myName
+                    ))
+                    .addOnSuccessListener {
+                        Log.d("Contacts", "Request sent successfully")
+                        Toast.makeText(this, "Request sent", Toast.LENGTH_SHORT).show()
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("Contacts", "Failed to send request", e)
+                        Toast.makeText(
+                            this,
+                            "Error sending request: ${e.message}",
+                            Toast.LENGTH_LONG
+                        ).show()
+                    }
+            }
+            .addOnFailureListener { e ->
+                Log.e("Contacts", "Lookup by email failed", e)
+                Toast.makeText(
+                    this,
+                    "Error finding user: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
             }
     }
 
-    private fun acceptRequest(req: FriendRequest) {
-        val meUid   = auth.currentUser!!.uid
-        val meEmail = auth.currentUser!!.email ?: ""
-
-        db.collection("users").document(meUid)
-            .collection("friends").document(req.fromUid)
-            .set(mapOf("email" to req.fromEmail))
-
-        db.collection("users").document(req.fromUid)
-            .collection("friends").document(meUid)
-            .set(mapOf("email" to meEmail))
-
-        db.collection("users")
-            .document(meUid)
-            .collection("incoming_requests")
-            .document(req.fromUid)
-            .delete()
-    }
-
-    private fun rejectRequest(req: FriendRequest) {
-        val meUid = auth.currentUser!!.uid
-        db.collection("users")
-            .document(meUid)
-            .collection("incoming_requests")
-            .document(req.fromUid)
-            .delete()
+    private fun loadRequests() {
+        val me = firebaseAuth.currentUser!!.uid
+        firestoreDb.collection("users")
+            .document(me)
+            .collection("friends")
+            .whereEqualTo("status", "pending")
+            .addSnapshotListener { snaps, _ ->
+                val pending = snaps?.documents.orEmpty().mapNotNull { doc ->
+                    val uid      = doc.id
+                    val fromName = doc.getString("fromName") ?: return@mapNotNull null
+                    val perm     = doc.getString("permission") ?: "view"
+                    Request(uid, fromName, perm)
+                }
+                requestAdapter.submitList(pending)
+            }
     }
 
     private fun loadFriends() {
-        val meUid = auth.currentUser!!.uid
-        db.collection("users")
-            .document(meUid)
+        val me = firebaseAuth.currentUser!!.uid
+        firestoreDb.collection("users")
+            .document(me)
             .collection("friends")
-            .addSnapshotListener { snaps: QuerySnapshot?, _ ->
-                friendsList.clear()
-                snaps?.documents?.forEach { d ->
-                    val uid   = d.id
-                    val email = d.getString("email") ?: ""
-                    friendsList += Friend(uid, email)
+            .whereEqualTo("status", "accepted")
+            .addSnapshotListener { snaps, _ ->
+                val viewList = mutableListOf<Friend>()
+                val editList = mutableListOf<Friend>()
+                snaps?.documents.orEmpty().forEach { doc ->
+                    val uid        = doc.id
+                    val permission = doc.getString("permission") ?: "view"
+                    firestoreDb.collection("users")
+                        .document(uid)
+                        .get()
+                        .addOnSuccessListener { userDoc ->
+                            val name = userDoc.getString("displayName") ?: uid
+                            val friend = Friend(uid, name, permission)
+                            if (permission == "view") viewList += friend
+                            else                     editList += friend
+
+                            viewOnlyAdapter.submitList(viewList.toList())
+                            fullAccessAdapter.submitList(editList.toList())
+                        }
                 }
-                friendsAdapter.notifyDataSetChanged()
+            }
+    }
+
+    private fun handleAccept(req: Request) {
+        val me = firebaseAuth.currentUser!!.uid
+        firestoreDb.collection("users")
+            .document(me)
+            .collection("friends")
+            .document(req.fromUid)
+            .update("status", "accepted")
+        firestoreDb.collection("users")
+            .document(req.fromUid)
+            .collection("friends")
+            .document(me)
+            .update("status", "accepted")
+    }
+
+    private fun handleDecline(req: Request) {
+        val me = firebaseAuth.currentUser!!.uid
+        firestoreDb.collection("users")
+            .document(me)
+            .collection("friends")
+            .document(req.fromUid)
+            .delete()
+        firestoreDb.collection("users")
+            .document(req.fromUid)
+            .collection("friends")
+            .document(me)
+            .delete()
+    }
+
+    private fun openFriendCalendar(friend: Friend) {
+        startActivity(Intent(this, HomeActivity::class.java).apply {
+            putExtra("EXTRA_VIEW_USER", friend.uid)
+            putExtra("EXTRA_PERMISSION", friend.permission)
+        })
+    }
+
+    /** Remove immediately from UI and from Firestore */
+    private fun removeFriend(friend: Friend) {
+        val me = firebaseAuth.currentUser!!.uid
+
+        // 1) immediate UI update
+        viewOnlyAdapter.submitList(
+            viewOnlyAdapter.currentList.filter { it.uid != friend.uid }
+        )
+        fullAccessAdapter.submitList(
+            fullAccessAdapter.currentList.filter { it.uid != friend.uid }
+        )
+
+        // 2) delete from Firestore
+        firestoreDb.collection("users")
+            .document(me)
+            .collection("friends")
+            .document(friend.uid)
+            .delete()
+        firestoreDb.collection("users")
+            .document(friend.uid)
+            .collection("friends")
+            .document(me)
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Removed ${friend.name}", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(
+                    this,
+                    "Error removing friend: ${e.message}",
+                    Toast.LENGTH_LONG
+                ).show()
+                Log.e("Contacts", "removeFriend failed", e)
             }
     }
 }

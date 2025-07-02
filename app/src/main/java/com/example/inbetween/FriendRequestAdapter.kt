@@ -27,7 +27,7 @@ class FriendRequestAdapter(
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val req = items[position]
-        holder.tvEmail.text = req.fromEmail
+        holder.tvEmail.text = req.fromName
         holder.btnAccept.setOnClickListener { onAccept(req) }
         holder.btnReject.setOnClickListener { onReject(req) }
     }

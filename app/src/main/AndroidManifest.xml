@@ -4,12 +4,12 @@
 
     <application
         android:allowBackup="true"
+        android:forceDarkAllowed="false"
         android:icon="@mipmap/ic_launch"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.InBetween">
 
-        <!-- השורה הזו הופכת את LoginActivity ל-Launcher של האפליקציה -->
         <activity
             android:name=".LoginActivity"
             android:exported="true"
@@ -20,38 +20,32 @@
             </intent-filter>
         </activity>
 
-        <!-- פעילות ההרשמה -->
         <activity
             android:name=".SignupActivity"
             android:exported="false"
             android:theme="@style/Theme.InBetween" />
 
-        <!-- מסך הבית -->
         <activity
             android:name=".HomeActivity"
             android:exported="false"
             android:theme="@style/Theme.InBetween" />
 
-        <!-- מסך הוספת משימה -->
         <activity
             android:name=".AddTaskActivity"
             android:exported="false"
             android:theme="@style/Theme.InBetween" />
 
-        <!-- פרטי משימה -->
         <activity
             android:name=".TaskDetailActivity"
             android:parentActivityName=".HomeActivity"
             android:exported="false"
             android:theme="@style/Theme.InBetween" />
 
-        <!-- מסך עריכת/הוספת מטרה -->
         <activity
             android:name=".AddEditGoalActivity"
             android:exported="false"
             android:theme="@style/Theme.InBetween" />
 
-        <!-- מסך הצעות זמנים למטרות -->
         <activity
             android:name=".GoalSuggestionsActivity"
             android:exported="false"

@@ -1,53 +1,121 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical"
-    android:padding="16dp"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/secondary">
+    android:background="@color/statusBar"
+    android:padding="16dp">
 
-    <!-- שדה להזנת האימייל של משתמש חדש -->
-    <com.google.android.material.textfield.TextInputLayout
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:hint="@string/friend_email">
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etFriendEmail"
+        android:layout_height="wrap_content">
+
+        <!-- Send Request Section -->
+        <com.google.android.material.textfield.TextInputLayout
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:padding="12dp"
-            android:textSize="14sp"
-            android:inputType="textEmailAddress"/>
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_height="wrap_content"
+            android:hint="Friend’s Email">
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etFriendEmail"
+                android:layout_width="match_parent"
+                android:layout_height="64dp"
+                android:inputType="textEmailAddress"
+                android:padding="12dp"
+                android:paddingTop="20dp"
+                android:textSize="14sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/btnSendRequest"
-        android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/send_request"/>
+        <TextView
+            android:layout_marginTop="16dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Permission:" />
 
-    <TextView
-        android:layout_marginTop="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/incoming_requests"
-        android:textStyle="bold"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvRequests"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"/>
+        <RadioGroup
+            android:id="@+id/rgPermission"
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="8dp">
 
-    <TextView
-        android:layout_marginTop="16dp"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/your_friends"
-        android:textStyle="bold"/>
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFriends"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
-</LinearLayout>
+            <RadioButton
+                android:id="@+id/rbViewOnly"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="View only"
+                android:checked="true" />
+
+            <RadioButton
+                android:id="@+id/rbEdit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Add/Delete"
+                android:layout_marginStart="24dp" />
+        </RadioGroup>
+
+        <Button
+            android:id="@+id/btnSendRequest"
+            android:layout_marginTop="24dp"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:text="Send Request"
+            style="@style/Widget.MaterialComponents.Button"
+            android:background="@drawable/rounded_button_white"
+            android:textColor="@color/white"/>
+
+        <!-- Incoming Friend Requests -->
+        <TextView
+            android:layout_marginTop="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Incoming Requests:" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvRequests"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginTop="8dp" />
+
+        <!-- View-Only Friends -->
+        <TextView
+            android:layout_marginTop="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="View-Only Friends:" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvViewOnlyFriends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginTop="8dp" />
+
+        <!-- Full-Access Friends -->
+        <TextView
+            android:layout_marginTop="32dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Full-Access Friends:" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvFullAccessFriends"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginTop="8dp" />
+
+        <!-- My Schedule Button -->
+        <Button
+            android:id="@+id/btnMySchedule"
+            android:layout_width="match_parent"
+            android:layout_height="48dp"
+            android:layout_marginTop="24dp"
+            android:text="My Schedule"
+            style="@style/Widget.MaterialComponents.Button"
+            android:background="@drawable/rounded_button_white"
+            android:textColor="@color/white" />
+
+    </LinearLayout>
+</ScrollView>
