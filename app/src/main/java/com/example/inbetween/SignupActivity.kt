@@ -41,7 +41,6 @@ class SignupActivity : BaseActivity() {
                 return@setOnClickListener
             }
 
-            // משתמשים ב-auth שמגיע מ-BaseActivity
             auth.createUserWithEmailAndPassword(email, pass)
                 .addOnSuccessListener { result ->
                     result.user?.updateProfile(

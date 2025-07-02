@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -21,9 +22,9 @@ class GoalSuggestionsActivity : BaseActivity() {
     }
 
     private lateinit var rvSuggestions : RecyclerView
-    private val suggestions         = mutableListOf<LocalDateTime>()
-    private val acceptedTasks       = mutableListOf<TaskItem>()
-    private val timeFmt             = DateTimeFormatter.ofPattern("HH:mm")
+    private val suggestions   = mutableListOf<LocalDateTime>()
+    private val acceptedTasks = mutableListOf<TaskItem>()
+    private val timeFmt       = DateTimeFormatter.ofPattern("HH:mm")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,16 +33,14 @@ class GoalSuggestionsActivity : BaseActivity() {
         rvSuggestions = findViewById(R.id.rvSuggestions)
 
         val goal = intent.getSerializableExtra(EXTRA_GOAL) as? GoalItem
-        val existing = intent
-            .getSerializableExtra(EXTRA_ALL_TASKS) as? List<TaskItem>
-            ?: emptyList()
+        @Suppress("UNCHECKED_CAST")
+        val existing = intent.getSerializableExtra(EXTRA_ALL_TASKS)
+                as? ArrayList<TaskItem> ?: arrayListOf()
         val weekStart = intent.getStringExtra(EXTRA_WEEK_START)
             ?.let { LocalDate.parse(it) }
-            ?: LocalDate.now().with(java.time.DayOfWeek.SUNDAY)
+            ?: LocalDate.now().with(DayOfWeek.SUNDAY)
 
-        goal?.let {
-            suggestions += computeSuggestions(it, existing, weekStart)
-        }
+        goal?.let { suggestions += computeSuggestions(it, existing, weekStart) }
 
         rvSuggestions.layoutManager = LinearLayoutManager(this)
         rvSuggestions.adapter = SuggestionsAdapter(
@@ -82,7 +81,8 @@ class GoalSuggestionsActivity : BaseActivity() {
 
     private fun checkDone() {
         if (suggestions.isEmpty()) {
-            setResult(Activity.RESULT_OK,
+            setResult(
+                Activity.RESULT_OK,
                 Intent().putExtra(EXTRA_NEW_TASKS, ArrayList(acceptedTasks))
             )
             finish()
@@ -95,14 +95,13 @@ class GoalSuggestionsActivity : BaseActivity() {
         weekStart: LocalDate
     ): List<LocalDateTime> {
         val result = mutableListOf<LocalDateTime>()
-        val sessions    = goal.sessionsPerWeek
+        val sessions     = goal.sessionsPerWeek
         val intervalDays = 7.0 / sessions
 
         for (i in 0 until sessions) {
             val dayOffset     = Math.floor(i * intervalDays).toLong()
             val candidateDate = weekStart.plusDays(dayOffset)
-            val candidateTime = candidateDate
-                .atStartOfDay()
+            val candidateTime = candidateDate.atStartOfDay()
                 .withHour(9)
                 .plusMinutes(0)
             val candidateEnd  = candidateTime.plusMinutes(goal.durationMin.toLong())

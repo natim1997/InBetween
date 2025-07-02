@@ -10,7 +10,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!-- Send Request Section -->
         <com.google.android.material.textfield.TextInputLayout
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
             android:layout_width="match_parent"
@@ -64,7 +63,6 @@
             android:background="@drawable/rounded_button_white"
             android:textColor="@color/white"/>
 
-        <!-- Incoming Friend Requests -->
         <TextView
             android:layout_marginTop="32dp"
             android:layout_width="wrap_content"
@@ -78,7 +76,6 @@
             android:nestedScrollingEnabled="false"
             android:layout_marginTop="8dp" />
 
-        <!-- View-Only Friends -->
         <TextView
             android:layout_marginTop="32dp"
             android:layout_width="wrap_content"
@@ -92,7 +89,6 @@
             android:nestedScrollingEnabled="false"
             android:layout_marginTop="8dp" />
 
-        <!-- Full-Access Friends -->
         <TextView
             android:layout_marginTop="32dp"
             android:layout_width="wrap_content"
@@ -106,7 +102,6 @@
             android:nestedScrollingEnabled="false"
             android:layout_marginTop="8dp" />
 
-        <!-- My Schedule Button -->
         <Button
             android:id="@+id/btnMySchedule"
             android:layout_width="match_parent"

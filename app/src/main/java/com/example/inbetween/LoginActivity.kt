@@ -17,7 +17,6 @@ class LoginActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.login)
 
-        // מאפיינים מה־XML
         val emailInput = findViewById<EditText>(R.id.emailInput)
         val passInput  = findViewById<EditText>(R.id.passwordInput)
         val loginBtn   = findViewById<Button>(R.id.loginButton)
@@ -25,13 +24,11 @@ class LoginActivity : BaseActivity() {
 
         Log.d("LoginActivity", "onCreate")
 
-        // ניווט למסך הרשמה
         signUpBtn.setOnClickListener {
             Log.d("LoginActivity", "Sign-Up button clicked")
             startActivity(Intent(this, SignupActivity::class.java))
         }
 
-        // התחברות
         loginBtn.setOnClickListener {
             val email = emailInput.text.toString().trim()
             val pass  = passInput.text.toString()

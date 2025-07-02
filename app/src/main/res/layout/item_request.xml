@@ -6,7 +6,6 @@
     android:orientation="horizontal"
     android:padding="8dp">
 
-    <!-- the user’s name who sent the request -->
     <TextView
         android:id="@+id/tvRequestName"
         android:layout_width="0dp"
@@ -15,7 +14,6 @@
         android:textSize="16sp"
         android:textColor="@android:color/black"/>
 
-    <!-- accept button -->
     <Button
         android:id="@+id/btnAccept"
         android:layout_width="wrap_content"
@@ -23,7 +21,6 @@
         android:text="Accept"
         android:layout_marginEnd="8dp"/>
 
-    <!-- decline button -->
     <Button
         android:id="@+id/btnDecline"
         android:layout_width="wrap_content"

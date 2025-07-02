@@ -14,11 +14,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 
 class ContactsActivity : BaseActivity() {
-    // Firebase instances
     private val firebaseAuth = FirebaseAuth.getInstance()
     private val firestoreDb  = FirebaseFirestore.getInstance()
 
-    // UI
     private lateinit var etFriendEmail       : TextInputEditText
     private lateinit var rgPermission        : RadioGroup
     private lateinit var rbViewOnly          : RadioButton
@@ -30,7 +28,6 @@ class ContactsActivity : BaseActivity() {
     private lateinit var rvViewOnlyFriends   : RecyclerView
     private lateinit var rvFullAccessFriends : RecyclerView
 
-    // Adapters
     private lateinit var requestAdapter      : ContactRequestAdapter
     private lateinit var viewOnlyAdapter     : FriendAdapter
     private lateinit var fullAccessAdapter   : FriendAdapter
@@ -39,7 +36,6 @@ class ContactsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_contacts)
 
-        // bind views
         etFriendEmail       = findViewById(R.id.etFriendEmail)
         rgPermission        = findViewById(R.id.rgPermission)
         rbViewOnly          = findViewById(R.id.rbViewOnly)
@@ -51,7 +47,6 @@ class ContactsActivity : BaseActivity() {
         rvViewOnlyFriends   = findViewById(R.id.rvViewOnlyFriends)
         rvFullAccessFriends = findViewById(R.id.rvFullAccessFriends)
 
-        // prepare adapters
         requestAdapter = ContactRequestAdapter(::handleAccept, ::handleDecline)
 
         viewOnlyAdapter = FriendAdapter(
@@ -63,7 +58,6 @@ class ContactsActivity : BaseActivity() {
             onDelete = { removeFriend(it) }
         )
 
-        // setup RecyclerViews
         rvRequests.layoutManager          = LinearLayoutManager(this)
         rvRequests.adapter                = requestAdapter
 
@@ -73,7 +67,6 @@ class ContactsActivity : BaseActivity() {
         rvFullAccessFriends.layoutManager = LinearLayoutManager(this)
         rvFullAccessFriends.adapter       = fullAccessAdapter
 
-        // send request button
         btnSendRequest.setOnClickListener {
             val email = etFriendEmail.text.toString().trim().lowercase()
             if (email.isEmpty()) {
@@ -84,12 +77,10 @@ class ContactsActivity : BaseActivity() {
             sendFriendRequest(email, permission)
         }
 
-        // My Schedule: return to own calendar
         btnMySchedule.setOnClickListener {
             startActivity(Intent(this, HomeActivity::class.java))
         }
 
-        // load existing requests & friends
         loadRequests()
         loadFriends()
     }
@@ -108,7 +99,6 @@ class ContactsActivity : BaseActivity() {
                 val me        = firebaseAuth.currentUser!!.uid
                 val myName    = firebaseAuth.currentUser!!.displayName ?: "Unknown"
 
-                // write pending to my subcollection
                 firestoreDb.collection("users")
                     .document(me)
                     .collection("friends")
@@ -118,7 +108,6 @@ class ContactsActivity : BaseActivity() {
                         "status"     to "pending"
                     ))
 
-                // write pending to theirs (with my name)
                 firestoreDb.collection("users")
                     .document(friendUid)
                     .collection("friends")
@@ -231,11 +220,9 @@ class ContactsActivity : BaseActivity() {
         })
     }
 
-    /** Remove immediately from UI and from Firestore */
     private fun removeFriend(friend: Friend) {
         val me = firebaseAuth.currentUser!!.uid
 
-        // 1) immediate UI update
         viewOnlyAdapter.submitList(
             viewOnlyAdapter.currentList.filter { it.uid != friend.uid }
         )
@@ -243,7 +230,6 @@ class ContactsActivity : BaseActivity() {
             fullAccessAdapter.currentList.filter { it.uid != friend.uid }
         )
 
-        // 2) delete from Firestore
         firestoreDb.collection("users")
             .document(me)
             .collection("friends")

@@ -10,11 +10,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 
 abstract class BaseActivity : AppCompatActivity() {
 
-    // make auth & firestore available in every subclass
     protected val auth by lazy { FirebaseAuth.getInstance() }
     protected val firestore by lazy { FirebaseFirestore.getInstance() }
 
-    /** hide status/navigation bars */
     protected fun hideSystemUI() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
         val controller = WindowInsetsControllerCompat(window, window.decorView)
@@ -28,7 +26,6 @@ abstract class BaseActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // auth & firestore are now ready to use in any subclass
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
