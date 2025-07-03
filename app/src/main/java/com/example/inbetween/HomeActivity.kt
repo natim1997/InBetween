@@ -17,7 +17,7 @@ import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import java.time.format.TextStyle
 import java.time.temporal.TemporalAdjusters
-import java.util.*
+import java.util.Locale
 
 class HomeActivity : BaseActivity() {
     private val firebaseAuth = FirebaseAuth.getInstance()
@@ -152,6 +152,14 @@ class HomeActivity : BaseActivity() {
             }
 
             REQUEST_VIEW_TASK -> {
+                val task = data.getSerializableExtra(TaskDetailActivity.EXTRA_TASK) as? TaskItem
+                    ?: return
+                val deleteAll = data.getBooleanExtra(TaskDetailActivity.EXTRA_DELETE_ALL, false)
+                val dateStr   = data.getStringExtra(TaskDetailActivity.EXTRA_DELETE_DATE) ?: return
+                val delDate   = LocalDate.parse(dateStr)
+
+                if (deleteAll) deleteTask(task)
+                else           excludeSingleDate(task, delDate)
             }
         }
     }
@@ -162,8 +170,7 @@ class HomeActivity : BaseActivity() {
             .document(targetUserId)
             .collection("tasks")
         val docId = "${task.title}_${task.date}"
-        col.document(docId)
-            .set(task.toMap())
+        col.document(docId).set(task.toMap())
     }
 
     private fun loadTasksFromFirestore() {
@@ -217,11 +224,11 @@ class HomeActivity : BaseActivity() {
             if (selectedDate in t.excludedDates) return@filter false
             when {
                 t.date == selectedDate -> true
-                t.isDaily && !selectedDate.isBefore(t.date)
-                        && (t.recurrenceEndDate == null || !selectedDate.isAfter(t.recurrenceEndDate)) -> true
-                t.isWeekly && !selectedDate.isBefore(t.date)
-                        && (t.recurrenceEndDate == null || !selectedDate.isAfter(t.recurrenceEndDate))
-                        && selectedDate.dayOfWeek == t.date.dayOfWeek -> true
+                t.isDaily && !selectedDate.isBefore(t.date) &&
+                        (t.recurrenceEndDate == null || !selectedDate.isAfter(t.recurrenceEndDate)) -> true
+                t.isWeekly && !selectedDate.isBefore(t.date) &&
+                        (t.recurrenceEndDate == null || !selectedDate.isAfter(t.recurrenceEndDate)) &&
+                        selectedDate.dayOfWeek == t.date.dayOfWeek -> true
                 else -> false
             }
         }.sortedBy { LocalTime.parse(it.startTime, timeFmt) }
@@ -246,5 +253,26 @@ class HomeActivity : BaseActivity() {
             m["excludedDates"] = excludedDates.map { it.toString() }
         }
         return m
+    }
+
+    private fun deleteTask(task: TaskItem) {
+        val docId = "${task.title}_${task.date}"
+        firestoreDb
+            .collection("users")
+            .document(targetUserId)
+            .collection("tasks")
+            .document(docId)
+            .delete()
+    }
+
+    private fun excludeSingleDate(task: TaskItem, date: LocalDate) {
+        val docId = "${task.title}_${task.date}"
+        val ref   = firestoreDb
+            .collection("users")
+            .document(targetUserId)
+            .collection("tasks")
+            .document(docId)
+        val newExclusions = task.excludedDates.map { it.toString() } + date.toString()
+        ref.update("excludedDates", newExclusions)
     }
 }
